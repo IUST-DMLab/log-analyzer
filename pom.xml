@@ -8,6 +8,11 @@
     <artifactId>LogAnalyzer</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <properties>
+        <logback.version>1.1.3</logback.version>
+    </properties>
+
+
     <build>
         <plugins>
             <plugin>
@@ -53,13 +58,27 @@
         <dependency>
             <groupId>ir.ac.iust.dml.kg</groupId>
             <artifactId>entity-extractor</artifactId>
-            <version>1.0</version>
+            <version>1.1.1</version>
         </dependency>
+        <dependency>
+            <groupId>ir.ac.iust.dml.kg</groupId>
+            <artifactId>PersianNormalizer</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>RELEASE</version>
         </dependency>
+
+        <!-- logback -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
     </dependencies>
 
 </project>
