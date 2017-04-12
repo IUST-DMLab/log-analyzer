@@ -46,7 +46,6 @@ public class LogReader {
 
         Map<String,Long> typesFreq = new HashMap<>();
 
-        System.exit(0);
         BufferedWriter writer = Files.newBufferedWriter(Paths.get("results/analysis.txt"));
         for(QueryRecord lr : queryRecords){
             try {
@@ -56,9 +55,13 @@ public class LogReader {
                 for (MatchedEntity mQ : result){
                     writer.write("\tENTITY:\t" + mQ.toString()+ "\n");
 
-                    for(String cls : mQ.getClassTree()) {
-                        writer.write("\t\tCLASS:\t" + cls + "\n");
-                        typesFreq.put(cls, lr.getFreq() + queriesFreq.getOrDefault(cls, 0l));
+                    if(mQ.getClassTree() == null)
+                        writer.write("\t\tCLASS:\tgetClassTree() is NULL\n");
+                    else {
+                        for (String cls : mQ.getClassTree()) {
+                            writer.write("\t\tCLASS:\t" + cls + "\n");
+                            typesFreq.put(cls, lr.getFreq() + queriesFreq.getOrDefault(cls, 0l));
+                        }
                     }
                 }
             }catch(Exception e){
