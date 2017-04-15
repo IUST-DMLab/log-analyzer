@@ -3,11 +3,8 @@
 * Maven
 
 # How to use
-```java
-class Test {
-    void sample() {
-    }
-}
+```
+java ZZ
 ```
 
  * The input data for Entity exractor are loaded as follows:

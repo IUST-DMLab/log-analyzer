@@ -6,13 +6,15 @@ import ir.ac.iust.dml.kg.entity.extractor.MatchedEntity;
 import ir.ac.iust.dml.kg.entity.extractor.readers.EntityReaderFromAllJson;
 import ir.ac.iust.dml.kg.entity.extractor.readers.EntityReaderFromRedirectJson;
 import ir.ac.iust.dml.kg.entity.extractor.tree.TreeEntityExtractor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -20,19 +22,19 @@ import java.util.stream.Collectors;
  * Created by ali on 17/02/17.
  */
 public class LogReader {
+    static final Logger LOGGER = LoggerFactory.getLogger(LogReader.class);
+    private static Properties properties = new Properties();
+
     public static void main(String[] args) throws Exception {
-        if(args.length<1){
-            System.out.println("Usage: java -jar LogAnalyzer.jar path-to-log-name path-to-entity-redirects-json-file");
-            System.exit(0);
-        }
-        String fileName = args[0];
+        try {
+            properties.load(LogReader.class.getResourceAsStream("/config.properties"));
+        }catch(Exception e){ LOGGER.error("Cannot load configuration file", e); }
 
-
+        String logFileName = properties.getProperty("log.file.path","data/queries_filtered.csv");
         IEntityExtractor extractor = setupNewExtractor();
 
-
         //Extract queries with Freq
-        List<QueryRecord> queryRecords = Files.lines(Paths.get(fileName))
+        List<QueryRecord> queryRecords = Files.lines(Paths.get(logFileName))
                 .parallel()
                 .skip(1)
                 .map(l -> LogRecordParser.ParseLine(l))
@@ -45,8 +47,10 @@ public class LogReader {
         Utils.persistSortedMap(queriesFreq, "results/queriesFreq.txt");
 
         Map<String,Long> typesFreq = new HashMap<>();
+        Map<String,Long> typesFreqOfNonValidTypes = new HashMap<>();
 
         BufferedWriter writer = Files.newBufferedWriter(Paths.get("results/analysis.txt"));
+
         for(QueryRecord lr : queryRecords){
             try {
                 /*lr.setMatchedEntities(extractor.search(lr.getQueryText(), true));*/
@@ -60,7 +64,9 @@ public class LogReader {
                     else {
                         for (String cls : mQ.getClassTree()) {
                             writer.write("\t\tCLASS:\t" + cls + "\n");
-                            typesFreq.put(cls, lr.getFreq() + queriesFreq.getOrDefault(cls, 0l));
+                            typesFreq.put(cls, lr.getFreq() + typesFreq.getOrDefault(cls, 0l));
+                            if(!Arrays.stream(mQ.getClassTree()).anyMatch(a -> a.equals("Thing")))
+                                typesFreqOfNonValidTypes.put(cls, lr.getFreq() + typesFreqOfNonValidTypes.getOrDefault(cls, 0l));
                         }
                     }
                 }
@@ -72,6 +78,7 @@ public class LogReader {
 
         writer.close();
         Utils.persistSortedMap(typesFreq, "results/typesFreq.txt");
+        Utils.persistSortedMap(typesFreqOfNonValidTypes, "results/typesFreqOfNonValidTypes.txt");
 
         /*Map<String,Long> entitiesFreq = new HashMap<>();
         int num=0;

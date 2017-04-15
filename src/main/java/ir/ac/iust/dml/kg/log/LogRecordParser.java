@@ -19,12 +19,9 @@ public class LogRecordParser {
      */
     public static QueryRecord ParseLine(String line) {
         QueryRecord queryRecord = null;
-        LOGGER.warn("parsing " + line);
-        //System.err.println("parsing " + line);
-        LOGGER.info("parsing " + line);
         try {
             if (StringUtils.countMatches(line, ",") < 1) {
-                System.err.println("Line: \"" + line + "\" cannot be parsed (insufficient elements in line).");
+                LOGGER.warn("Line: \"" + line + "\" cannot be parsed (insufficient elements in line).");
                 return null;
             }
             String[] reverseSplits =  (new StringBuilder(line)).reverse().toString().split(",",2);
@@ -36,8 +33,9 @@ public class LogRecordParser {
 
             queryRecord = new QueryRecord(freq,queryText);
         } catch (Exception e) {
-            System.err.println("Line: \"" + line + "\" cannot be parsed" +  e.getMessage());
+            LOGGER.warn("Line: \"" + line + "\" cannot be parsed", e);
         }
+
         return queryRecord;
     }
 
