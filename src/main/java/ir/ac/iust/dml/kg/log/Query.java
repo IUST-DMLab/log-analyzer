@@ -1,6 +1,6 @@
 package ir.ac.iust.dml.kg.log;
 
-import ir.ac.iust.dml.kg.entity.extractor.MatchedEntity;
+import ir.ac.iust.dml.kg.resource.extractor.MatchedResource;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class Query {
     protected String queryText;
-    protected List<MatchedEntity> matchedEntities;
+    protected List<MatchedResource> matchedEntities;
 
     public Query(String queryText) {
         this.queryText = queryText;
@@ -18,10 +18,12 @@ public class Query {
     public String getQueryText() {
         return queryText;
     }
-    public List<MatchedEntity> getMatchedEntities() {
+
+    public List<MatchedResource> getMatchedEntities() {
         return matchedEntities;
     }
-    public void setMatchedEntities(List<MatchedEntity> matchedEntities) {
+
+    public void setMatchedEntities(List<MatchedResource> matchedEntities) {
         this.matchedEntities = matchedEntities;
     }
 

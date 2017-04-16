@@ -1,9 +1,5 @@
 package ir.ac.iust.dml.kg.log;
 
-import ir.ac.iust.dml.kg.entity.extractor.MatchedEntity;
-
-import java.util.List;
-
 /**
  * Created by ali on 17/02/17.
  */
