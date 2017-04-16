@@ -1,5 +1,6 @@
 package ir.ac.iust.dml.kg.log;
 
+import com.google.common.util.concurrent.AtomicLongMap;
 import ir.ac.iust.dml.kg.resource.extractor.IResourceExtractor;
 import ir.ac.iust.dml.kg.resource.extractor.IResourceReader;
 import ir.ac.iust.dml.kg.resource.extractor.MatchedResource;
@@ -12,10 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -27,6 +25,7 @@ public class LogReader {
     private static Properties properties = new Properties();
 
     public static void main(String[] args) throws Exception {
+
         try {
             properties.load(LogReader.class.getResourceAsStream("/config.properties"));
         } catch (Exception e) {
@@ -52,10 +51,12 @@ public class LogReader {
         Utils.persistSortedMap(queriesFreq, "results/queriesFreq.txt");
 
 
-        Map<String, Long> typesFreq = new HashMap<>();
-        Map<String, Long> typesFreqOfNonValidTypes = new HashMap<>();
+        Map<String, Long> classFreqs = new HashMap<>();
+        Map<String, Long> classFreqsOfNonMappedClasses = new HashMap<>();
 
         BufferedWriter writer = Files.newBufferedWriter(Paths.get("results/analysis.txt"));
+
+        AtomicLongMap<String> entityPropertyFreqs = AtomicLongMap.create();
 
         for (QueryRecord lr : queryRecords) {
             try {
@@ -76,15 +77,31 @@ public class LogReader {
                     writer.write("\t\tdisambiguatedFrom:\t" + noD(mainResource.getDisambiguatedFrom()) + "\n");
                     writer.write("\t\tType:\t" + noD(mainResource.getType()) + "\n");
 
+                    Set<String> propertyClassTrees = new HashSet<>();
+                    Set<String> entityClassTrees = new HashSet<>();
 
                     if (mR.getResource().getClassTree() != null) {
                         for (String cls : mR.getResource().getClassTree()) {
-                            typesFreq.put(cls, lr.getFreq() + typesFreq.getOrDefault(cls, 0l));
+                            classFreqs.put(cls, lr.getFreq() + classFreqs.getOrDefault(cls, 0l));
                             //if(!Arrays.stream(mQ.getClassTree()).anyMatch(a -> a.equals("Thing")))
                             //    typesFreqOfNonValidTypes.put(cls, lr.getFreq() + typesFreqOfNonValidTypes.getOrDefault(cls, 0l));
+
+                            //Counting patterns
+                            if (mR.getResource().getType() != null) {
+                                String type = clean(mR.getResource().getType().toString(), "#");
+                                if (type.equals("DatatypeProperty"))
+                                    propertyClassTrees.add(clean(cls, "/"));
+                                else if (type.equals("Resource"))
+                                    entityClassTrees.add(clean(cls, "/"));
+
+                            }
                         }
                     }
-                    }
+                    for (String entityClass : entityClassTrees)
+                        for (String propertyClass : propertyClassTrees)
+                            entityPropertyFreqs.addAndGet(entityClass + "," + propertyClass, lr.getFreq());
+                }
+
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -93,7 +110,9 @@ public class LogReader {
         }
 
         writer.close();
-        Utils.persistSortedMap(typesFreq, "results/typesFreq.txt");
+        Utils.persistSortedMap(classFreqs, "results/classesFreq.txt");
+        Utils.persistSortedMap(entityPropertyFreqs.asMap(), "results/patternsFreq.txt");
+
         //        Utils.persistSortedMap(typesFreqOfNonValidTypes, "results/typesFreqOfNonValidTypes.txt");
 
             /*Map<String,Long> entitiesFreq = new HashMap<>();
@@ -147,6 +166,20 @@ public class LogReader {
         return extractor;
     }
 
+
+    /**
+     * Tokenizes the string using delimiter and return the last part.
+     *
+     * @param typeIri
+     * @param separator
+     * @return
+     */
+    private static String clean(String typeIri, String separator) {
+        if (typeIri.contains("#"))
+            return typeIri.substring(typeIri.lastIndexOf(separator) + 1);
+        return typeIri;
+    }
+
     /**
      * returns value, or "null" if null
      *
@@ -158,4 +191,4 @@ public class LogReader {
         return input.toString();
     }
 
-    }
+}
