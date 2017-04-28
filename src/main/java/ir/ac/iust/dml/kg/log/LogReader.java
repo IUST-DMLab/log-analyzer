@@ -29,7 +29,7 @@ public class LogReader {
         try {
             properties.load(LogReader.class.getResourceAsStream("/config.properties"));
         } catch (Exception e) {
-            LOGGER.error("Cannot load configuration file", e);
+            System.err.println("Cannot load configuration file: " + e.getStackTrace());
         }
 
         String logFileName = properties.getProperty("log.file.path", "data/queries_filtered.csv");
@@ -89,7 +89,7 @@ public class LogReader {
                             //Counting patterns
                             if (mR.getResource().getType() != null) {
                                 String type = clean(mR.getResource().getType().toString(), "#");
-                                if (type.equals("DatatypeProperty"))
+                                if (type.equals("Property"))
                                     propertyClassTrees.add(clean(cls, "/"));
                                 else if (type.equals("Resource"))
                                     entityClassTrees.add(clean(cls, "/"));
@@ -153,6 +153,7 @@ public class LogReader {
                     queriesFreq.entrySet()
                             .stream()
                             .sorted(Map.Entry.<String, Long>comparingByValue().reversed());
+.
 
                 }
             }*/
