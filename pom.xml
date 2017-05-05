@@ -31,7 +31,8 @@
                     <attach>false</attach>
                     <archive>
                         <manifest>
-                            <mainClass>ir.ac.iust.dml.kg.log.LogReader</mainClass>
+                            <!--<mainClass>ir.ac.iust.dml.kg.log.LogReader</mainClass>-->
+                            <mainClass>ir.ac.iust.dml.kg.log.ReadCache</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
