@@ -23,29 +23,44 @@
                 </configuration>
             </plugin>
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <attach>false</attach>
-                    <archive>
-                        <manifest>
-                            <!--<mainClass>ir.ac.iust.dml.kg.log.LogReader</mainClass>-->
-                            <mainClass>ir.ac.iust.dml.kg.log.ReadCache</mainClass>
-                        </manifest>
-                    </archive>
+                <archive>
+                    <manifestEntries>
+                         <Class-Path>
+                             lib/com.openlinksw.virtuoso-1.0.jar 
+                             lib/com.openlinksw.virtuoso-4.2.jar
+                         </Class-Path>
+                    </manifestEntries>
+                    <manifest>
+                        <addClasspath>true</addClasspath>
+                        <mainClass>ir.ac.iust.dml.kg.log.ReadCache</mainClass>
+                        <classpathPrefix>lib/</classpathPrefix>
+                    </manifest>
+                </archive>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
                 <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
+                <execution>
+                    <id>copy-dependencies</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>copy-dependencies</goal>
+                    </goals>
+                    <configuration>
+                        <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                        <overWriteReleases>false</overWriteReleases>
+                        <overWriteSnapshots>false</overWriteSnapshots>
+                        <overWriteIfNewer>true</overWriteIfNewer>
+                    </configuration>
+                </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
 
@@ -76,8 +91,6 @@
 
         <dependency>
             <groupId>ir.ac.iust.dml.kg</groupId>
-            <!--<artifactId>entity-extractor</artifactId>
-            <version>1.1.1</version>-->
             <artifactId>resource-extractor</artifactId>
             <version>1.2.0</version>
             <!--<exclusions>
@@ -118,14 +131,42 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.5</version>
         </dependency>
-
+<!-- https://mvnrepository.com/artifact/log4j/log4j -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.rdf4j</groupId>
+            <artifactId>rdf4j-runtime</artifactId>
+            <version>2.1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>virt_rdf4j</groupId>
+            <artifactId>com.openlinksw.virtuoso</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/lib/virt_rdf4j.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>virtjdbc</groupId>
+            <artifactId>com.openlinksw.virtuoso</artifactId>
+            <version>4.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/lib/virtjdbc4_2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.5</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>21.0</version>
         </dependency>
-
 
         <!-- logback -->
         <dependency>
