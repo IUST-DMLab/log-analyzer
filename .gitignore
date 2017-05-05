@@ -9,7 +9,7 @@ results/
 *.txt
 *.json
 *.7z
-*.jar
+#*.jar
 
 ### Maven ###
 target/
@@ -154,7 +154,6 @@ buildNumber.properties
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.ear
 
