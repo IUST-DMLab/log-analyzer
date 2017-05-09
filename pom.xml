@@ -35,7 +35,7 @@
                     </manifestEntries>
                     <manifest>
                         <addClasspath>true</addClasspath>
-                        <mainClass>ir.ac.iust.dml.kg.log.ReadCache</mainClass>
+                        <mainClass>ir.ac.iust.dml.kg.log.LogReader</mainClass>
                         <classpathPrefix>lib/</classpathPrefix>
                     </manifest>
                 </archive>
