@@ -1,11 +1,7 @@
 package ir.ac.iust.dml.kg.log;
 
 import com.google.common.util.concurrent.AtomicLongMap;
-import ir.ac.iust.dml.kg.resource.extractor.IResourceExtractor;
-import ir.ac.iust.dml.kg.resource.extractor.IResourceReader;
-import ir.ac.iust.dml.kg.resource.extractor.MatchedResource;
-import ir.ac.iust.dml.kg.resource.extractor.Resource;
-import ir.ac.iust.dml.kg.resource.extractor.readers.ResourceReaderFromKGStoreV1Service;
+import ir.ac.iust.dml.kg.resource.extractor.*;
 import ir.ac.iust.dml.kg.resource.extractor.tree.TreeResourceExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -161,12 +157,12 @@ public class LogReader {
 
     private static IResourceExtractor setupNewExtractor() throws Exception {
         IResourceExtractor extractor = new TreeResourceExtractor();
-        try (IResourceReader reader = new ResourceReaderFromKGStoreV1Service("http://194.225.227.161:8091/")) {
-            extractor.setup(reader, 1000000);
+        //try (IResourceReader reader = new ResourceReaderFromKGStoreV1Service("http://194.225.227.161:8091/")) {
+        try (IResourceReader reader = new ResourceCache("/media/sf_D/Dropbox/dev/kg/SearchProject/cache_20170506")) {
+            extractor.setup(reader, 100000);
         }
         return extractor;
     }
-
 
     /**
      * Tokenizes the string using delimiter and return the last part.
