@@ -150,9 +150,10 @@ public class LogReader {
         IResourceExtractor extractor = new TreeResourceExtractor();
         //try (IResourceReader reader = new ResourceReaderFromKGStoreV1Service("http://194.225.227.161:8091/")) {
         long t1 = System.currentTimeMillis();
-        try (IResourceReader reader = new ResourceCache("/media/sf_D/Dropbox/dev/kg/data/fst-cache", true)) {
+        try (IResourceReader reader = new ResourceCache("cache", true)) {
             extractor.setup(reader, 1000);
             System.out.println("" + (System.currentTimeMillis() - t1));
+            System.out.println("testing: قانون اساسی ایران ماگدبورگ");
             extractor.search(" قانون اساسی ایران ماگدبورگ", true).forEach(System.out::println);
         } catch (Exception e) {
             e.printStackTrace();
