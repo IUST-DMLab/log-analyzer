@@ -10,11 +10,11 @@ import ir.ac.iust.dml.kg.resource.extractor.readers.ResourceReaderFromVirtuoso;
  */
 public class ReadCache {
     public static void main(String[] args) throws Exception {
-        final ResourceCache cache = new ResourceCache("cache", true);
+        final ResourceCache cache = new ResourceCache("./cache", true);
         try (IResourceReader reader = new ResourceReaderFromVirtuoso("194.225.227.161", "1111",
                 "dba", "fkgVIRTUOSO2017", "http://fkg.iust.ac.ir/")) {
 
-            cache.cache(reader, 1000);
+            cache.cache(reader, 100000);
 
 
         }
