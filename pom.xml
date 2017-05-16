@@ -22,23 +22,24 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
-                <archive>
-                    <manifestEntries>
-                         <Class-Path>
-                             lib/com.openlinksw.virtuoso-1.0.jar 
-                             lib/com.openlinksw.virtuoso-4.2.jar
-                         </Class-Path>
-                    </manifestEntries>
-                    <manifest>
-                        <addClasspath>true</addClasspath>
-                        <mainClass>ir.ac.iust.dml.kg.log.ReadCache</mainClass>
-                        <classpathPrefix>lib/</classpathPrefix>
-                    </manifest>
-                </archive>
+                    <archive>
+                        <manifestEntries>
+                            <Class-Path>
+                                lib/com.openlinksw.virtuoso-1.0.jar
+                                lib/com.openlinksw.virtuoso-4.2.jar
+                            </Class-Path>
+                        </manifestEntries>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>ir.ac.iust.dml.kg.log.ReadCache</mainClass>
+                            <classpathPrefix>lib/</classpathPrefix>
+                        </manifest>
+                    </archive>
                 </configuration>
             </plugin>
             <plugin>
@@ -46,21 +47,22 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.10</version>
                 <executions>
-                <execution>
-                    <id>copy-dependencies</id>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>copy-dependencies</goal>
-                    </goals>
-                    <configuration>
-                        <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                        <overWriteReleases>false</overWriteReleases>
-                        <overWriteSnapshots>false</overWriteSnapshots>
-                        <overWriteIfNewer>true</overWriteIfNewer>
-                    </configuration>
-                </execution>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
 
@@ -130,7 +132,7 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.5</version>
         </dependency>
-<!-- https://mvnrepository.com/artifact/log4j/log4j -->
+        <!-- https://mvnrepository.com/artifact/log4j/log4j -->
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>

@@ -4,6 +4,7 @@ import ir.ac.iust.dml.kg.resource.extractor.IResourceReader;
 import ir.ac.iust.dml.kg.resource.extractor.ResourceCache;
 import ir.ac.iust.dml.kg.resource.extractor.readers.ResourceReaderFromVirtuoso;
 
+
 /**
  * Created by ali on 04/05/17.
  */
@@ -14,6 +15,8 @@ public class ReadCache {
                 "dba", "fkgVIRTUOSO2017", "http://localhost:8890/knowledgeGraphV2")) {
 
             cache.cache(reader, 100000);
+
+
         }
     }
 }
