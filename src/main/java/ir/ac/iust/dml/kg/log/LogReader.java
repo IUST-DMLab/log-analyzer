@@ -31,7 +31,6 @@ public class LogReader {
         String logFileName = properties.getProperty("log.file.path", "data/queries_filtered.csv");
         IResourceExtractor extractor = setupNewExtractor();
 
-
         //Extract queries with Freq
         List<QueryRecord> queryRecords = Files.lines(Paths.get(logFileName))
                 .parallel()
@@ -40,12 +39,10 @@ public class LogReader {
                 .filter(lr -> lr != null)
                 .collect(Collectors.toList());
 
-
         //Extract queriesFreq
         Map<String, Long> queriesFreq = new HashMap<>();
         queryRecords.forEach(lr -> queriesFreq.put(lr.getQueryText(), lr.getFreq() + queriesFreq.getOrDefault(lr.getQueryText(), 0l)));
         Utils.persistSortedMap(queriesFreq, "results/queriesFreq.txt");
-
 
         Map<String, Long> classFreqs = new HashMap<>();
         Map<String, Long> classFreqsOfNonMappedClasses = new HashMap<>();
@@ -98,7 +95,6 @@ public class LogReader {
                             entityPropertyFreqs.addAndGet(entityClass + "," + propertyClass, lr.getFreq());
                 }
 
-
             } catch (Exception e) {
                 e.printStackTrace();
                 throw e;
@@ -126,15 +122,13 @@ public class LogReader {
                     writer.write(pair.getKey() + "\t" + pair.getValue() + "\n");
             }*/
 
-
-
             /*try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("Queries_with_Entities.txt"))) {
 
                 Iterator<Map.Entry<String, Long>> itr = queriesFreq.entrySet()
                         .stream()
                         .sorted(Map.Entry.<String, Long>comparingByValue().reversed()).iterator();
 
-                while(itr.hasNext()){
+                while(itr.hasN  ext()){
                     Map.Entry<String, Long> e = itr.next();
                     writer.write(String.format("Query: \"%s\" x %d times\n", e.getKey(), e.getValue()));
 
@@ -142,15 +136,12 @@ public class LogReader {
                     for (Entity detectedEntity : matchedEntities) {
                         entitiesFreq.put(detectedEntity.toString(), entitiesFreq.getOrDefault(detectedEntity.toString(),0l) + e.getValue());
                         writer.write(String.format("\tEntity: %s\n", detectedEntity.getEntity()));
-
                     }
                     writer.write("\n");
 
                     queriesFreq.entrySet()
                             .stream()
                             .sorted(Map.Entry.<String, Long>comparingByValue().reversed());
-.
-
                 }
             }*/
     }
@@ -158,15 +149,19 @@ public class LogReader {
     private static IResourceExtractor setupNewExtractor() throws Exception {
         IResourceExtractor extractor = new TreeResourceExtractor();
         //try (IResourceReader reader = new ResourceReaderFromKGStoreV1Service("http://194.225.227.161:8091/")) {
-        try (IResourceReader reader = new ResourceCache("/media/sf_D/Dropbox/dev/kg/SearchProject/cache_20170506")) {
-            extractor.setup(reader, 100000);
+        long t1 = System.currentTimeMillis();
+        try (IResourceReader reader = new ResourceCache("/media/sf_D/Dropbox/dev/kg/data/fst-cache", true)) {
+            extractor.setup(reader, 1000);
+            System.out.println("" + (System.currentTimeMillis() - t1));
+            extractor.search(" قانون اساسی ایران ماگدبورگ", true).forEach(System.out::println);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return extractor;
     }
 
     /**
-     * Tokenizes the string using delimiter and return the last part.
-     *
+     * Tokenizes the string using delimiter and return the last part.+
      * @param typeIri
      * @param separator
      * @return
@@ -187,5 +182,4 @@ public class LogReader {
             return "null";
         return input.toString();
     }
-
 }

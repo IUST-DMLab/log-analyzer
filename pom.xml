@@ -35,7 +35,7 @@
                     </manifestEntries>
                     <manifest>
                         <addClasspath>true</addClasspath>
-                        <mainClass>ir.ac.iust.dml.kg.log.LogReader</mainClass>
+                        <mainClass>ir.ac.iust.dml.kg.log.ReadCache</mainClass>
                         <classpathPrefix>lib/</classpathPrefix>
                     </manifest>
                 </archive>
@@ -92,7 +92,7 @@
         <dependency>
             <groupId>ir.ac.iust.dml.kg</groupId>
             <artifactId>resource-extractor</artifactId>
-            <version>1.2.0</version>
+            <version>1.2.3</version>
             <!--<exclusions>
                 <exclusion>
                     <groupId>org.apache.logging.log4j</groupId>
