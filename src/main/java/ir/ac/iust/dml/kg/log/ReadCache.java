@@ -14,7 +14,7 @@ public class ReadCache {
         try (IResourceReader reader = new ResourceReaderFromVirtuoso("194.225.227.161", "1111",
                 "dba", "fkgVIRTUOSO2017", "http://localhost:8890/knowledgeGraphV2")) {
 
-            cache.cache(reader, 100000);
+            cache.cache(reader, 1000);
 
 
         }
