@@ -153,8 +153,14 @@ public class LogReader {
         try (IResourceReader reader = new ResourceCache("cache", true)) {
             extractor.setup(reader, 1000);
             System.out.println("" + (System.currentTimeMillis() - t1));
-            System.out.println("testing: قانون اساسی ایران ماگدبورگ");
-            extractor.search(" قانون اساسی ایران ماگدبورگ", true).forEach(System.out::println);
+            /*System.out.println("testing: قانون اساسی ایران ماگدبورگ");
+            extractor.search(" قانون اساسی ایران ماگدبورگ", true).forEach(System.out::println);*/
+            List<MatchedResource> a = extractor.search("هاشمی رفسنجانی", true);
+            a.forEach(System.out::println);
+
+            System.exit(1);
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
