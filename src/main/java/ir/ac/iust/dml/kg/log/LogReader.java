@@ -155,11 +155,7 @@ public class LogReader {
             System.out.println("" + (System.currentTimeMillis() - t1));
             /*System.out.println("testing: قانون اساسی ایران ماگدبورگ");
             extractor.search(" قانون اساسی ایران ماگدبورگ", true).forEach(System.out::println);*/
-            List<MatchedResource> a = extractor.search("هاشمی رفسنجانی", true);
-            a.forEach(System.out::println);
-
-            System.exit(1);
-
+//            List<MatchedResource> a = extractor.search("هاشمی رفسنجانی", true);
 
         } catch (Exception e) {
             e.printStackTrace();
