@@ -16,7 +16,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.2</version>
+                <version>3.6.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -93,7 +93,7 @@
         <dependency>
             <groupId>ir.ac.iust.dml.kg</groupId>
             <artifactId>resource-extractor</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.7</version>
             <!--<exclusions>
                 <exclusion>
                     <groupId>org.apache.logging.log4j</groupId>
