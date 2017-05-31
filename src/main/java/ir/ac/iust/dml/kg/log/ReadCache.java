@@ -12,7 +12,7 @@ public class ReadCache {
     public static void main(String[] args) throws Exception {
         final ResourceCache cache = new ResourceCache(args[0], true);
         try (IResourceReader reader = new ResourceReaderFromVirtuoso("194.225.227.161", "1111",
-                "dba", "fkgVIRTUOSO2017", "http://fkg.iust.ac.ir/")) {
+                "dba", "fkgVIRTUOSO2017", "http://fkg.iust.ac.ir/new")) {
 
             cache.cache(reader, 10000);
         }
