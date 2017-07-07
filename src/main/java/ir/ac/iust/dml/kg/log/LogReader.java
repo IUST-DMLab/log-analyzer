@@ -89,7 +89,7 @@ public class LogReader {
                         writer.write("\t\tinstanceOf:\t" + noD(resource.getInstanceOf()) + "\n");
                         writer.write("\t\tclassTree:\t" + noD(resource.getClassTree()) + "\n");
                         writer.write("\t\tvariantLabel:\t" + noD(resource.getVariantLabel()) + "\n");
-                        writer.write("\t\tdisambiguatedFrom:\t" + noD(resource.getDisambiguatedFrom()) + "\n");
+                        //writer.write("\t\tdisambiguatedFrom:\t" + noD(resource.getDisambiguatedFrom()) + "\n");
                         writer.write("\t\tType:\t" + noD(resource.getType()) + "\n");
 
                         if(resource.getType() == null){
