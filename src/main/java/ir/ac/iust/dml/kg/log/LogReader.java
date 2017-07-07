@@ -12,6 +12,8 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static ir.ac.iust.dml.kg.resource.extractor.ResourceType.Entity;
+
 
 /**
  * Created by ali on 17/02/17.
@@ -44,12 +46,18 @@ public class LogReader {
         queryRecords.forEach(lr -> queriesFreq.put(lr.getQueryText(), lr.getFreq() + queriesFreq.getOrDefault(lr.getQueryText(), 0l)));
         Utils.persistSortedMap(queriesFreq, "results/queriesFreq.txt");
 
-        Map<String, Long> classFreqs = new HashMap<>();
+        Map<String, Long> entityFreqsAllClasses = new HashMap<>();
+        Map<String, Long> entityFreqsInstanceOf = new HashMap<>();
+        Map<String, Long> propertyFreqs = new HashMap<>();
+        Map<String, Long> entityFreqs = new HashMap<>();
+
         Map<String, Long> classFreqsOfNonMappedClasses = new HashMap<>();
 
         BufferedWriter writer = Files.newBufferedWriter(Paths.get("results/analysis.txt"));
 
         AtomicLongMap<String> entityPropertyFreqs = AtomicLongMap.create();
+        AtomicLongMap<String> entityPropertyFreqsInstanceOfOnly = AtomicLongMap.create();
+
 
         for (QueryRecord lr : queryRecords) {
             try {
@@ -58,41 +66,95 @@ public class LogReader {
                 List<MatchedResource> result = extractor.search(lr.getQueryText(), true);
                 if (result.size() > 0)
                     System.out.printf("%s:\t result size %d\n", lr.getQueryText(), result.size());
-                for (MatchedResource mR : result) {
-                    if (mR.getResource() == null) continue;
-                    Resource mainResource = mR.getResource();
 
-                    writer.write("\tResource label:\t" + noD(mainResource.getLabel()) + "\n");
-                    writer.write("\t\tiri:\t" + noD(mainResource.getIri()) + "\n");
-                    writer.write("\t\tinstanceOf:\t" + noD(mainResource.getInstanceOf()) + "\n");
-                    writer.write("\t\tclassTree:\t" + noD(mainResource.getClassTree()) + "\n");
-                    writer.write("\t\tvariantLabel:\t" + noD(mainResource.getVariantLabel()) + "\n");
-                    writer.write("\t\tdisambiguatedFrom:\t" + noD(mainResource.getDisambiguatedFrom()) + "\n");
-                    writer.write("\t\tType:\t" + noD(mainResource.getType()) + "\n");
+                Set<Resource> entities = new LinkedHashSet<Resource>();
+                Set<Resource> properties = new LinkedHashSet<Resource>();
+
+                for (MatchedResource mR : result) {
+                    //if (mR.getResource() == null) continue;
+                    //Resource mainResource = mR.getResource();
 
                     Set<String> propertyClassTrees = new HashSet<>();
                     Set<String> entityClassTrees = new HashSet<>();
 
-                    if (mR.getResource().getClassTree() != null) {
+                    List<Resource> resourcesList = new ArrayList<Resource>();
+                    if(mR.getResource()!= null) resourcesList.add(mR.getResource());
+                   /* if(mR.getAmbiguities()!=null)
+                        for (Resource resource:mR.getAmbiguities())
+                            resourcesList.add(resource);*/
+
+                    for(Resource resource: resourcesList){
+                        writer.write("\tResource label:\t" + noD(resource.getLabel()) + "\n");
+                        writer.write("\t\tiri:\t" + noD(resource.getIri()) + "\n");
+                        writer.write("\t\tinstanceOf:\t" + noD(resource.getInstanceOf()) + "\n");
+                        writer.write("\t\tclassTree:\t" + noD(resource.getClassTree()) + "\n");
+                        writer.write("\t\tvariantLabel:\t" + noD(resource.getVariantLabel()) + "\n");
+                        writer.write("\t\tdisambiguatedFrom:\t" + noD(resource.getDisambiguatedFrom()) + "\n");
+                        writer.write("\t\tType:\t" + noD(resource.getType()) + "\n");
+
+                        if(resource.getType() == null){
+                            System.err.printf("Unknown resource type: \"%s\" \t URI: %s\n", noD(resource.getLabel()),noD(resource.getIri()));
+                            continue;
+                        }
+                        switch(resource.getType()){
+                            case Entity:
+                                entities.add(resource);
+                                entityFreqs.put(resource.getIri(), lr.getFreq() + entityFreqs.getOrDefault(resource.getIri(), 0l));
+                                //count all classes
+                                if (resource.getClassTree() != null) {
+                                    for (String cls : resource.getClassTree()) {
+                                        entityFreqsAllClasses.put(cls, lr.getFreq() + entityFreqsAllClasses.getOrDefault(cls, 0l));
+                                    }
+                                }
+                                //count instanceOf classes
+                                if (resource.getInstanceOf() != null)
+                                    entityFreqsInstanceOf.put(resource.getInstanceOf(), lr.getFreq() + entityFreqsInstanceOf.getOrDefault(resource.getInstanceOf(), 0l));
+
+                                break;
+                            case Property:
+                                properties.add(resource);
+                                propertyFreqs.put(resource.getIri(), lr.getFreq() + propertyFreqs.getOrDefault(resource.getIri(), 0l));
+                                break;
+                            default:
+                                System.err.printf("Unknown resource type: \"%s\" \t URI: %s\n", noD(resource.getLabel()),noD(resource.getIri()));
+                        }
+                    }
+
+
+                    /*if (mR.getResource().getClassTree() != null) {
                         for (String cls : mR.getResource().getClassTree()) {
-                            classFreqs.put(cls, lr.getFreq() + classFreqs.getOrDefault(cls, 0l));
+                            entityFreqsAllClasses.put(cls, lr.getFreq() + entityFreqsAllClasses.getOrDefault(cls, 0l));
                             //if(!Arrays.stream(mQ.getClassTree()).anyMatch(a -> a.equals("Thing")))
                             //    typesFreqOfNonValidTypes.put(cls, lr.getFreq() + typesFreqOfNonValidTypes.getOrDefault(cls, 0l));
 
                             //Counting patterns
                             if (mR.getResource().getType() != null) {
                                 String type = clean(mR.getResource().getType().toString(), "#");
-                                if (type.equals("Property"))
+                                if (type.contains("Property"))
                                     propertyClassTrees.add(clean(cls, "/"));
                                 else if (type.equals("Resource"))
                                     entityClassTrees.add(clean(cls, "/"));
 
                             }
                         }
-                    }
-                    for (String entityClass : entityClassTrees)
+                    }*/
+                }
+                    /*for (String entityClass : entityClassTrees)
                         for (String propertyClass : propertyClassTrees)
-                            entityPropertyFreqs.addAndGet(entityClass + "," + propertyClass, lr.getFreq());
+                            entityPropertyFreqs.addAndGet(entityClass + "," + propertyClass, lr.getFreq());*/
+
+                for(Resource entity: entities){
+                    for(Resource property: properties){
+                        if(entity.getClassTree()!=null && property.getClassTree()!=null){
+                            for (String propClass :property.getClassTree()){
+                                if(entity.getClassTree().contains(propClass)){
+                                    entityPropertyFreqs.addAndGet(property.getIri() + "\t" + propClass, lr.getFreq());
+                                }
+                                if(entity.getInstanceOf()!=null && entity.getInstanceOf().equals(propClass))
+                                    entityPropertyFreqsInstanceOfOnly.addAndGet(property.getIri() + "\t" + propClass, lr.getFreq());
+                            }
+                        }
+                    }
                 }
 
             } catch (Exception e) {
@@ -102,8 +164,12 @@ public class LogReader {
         }
 
         writer.close();
-        Utils.persistSortedMap(classFreqs, "results/classesFreq.txt");
-        Utils.persistSortedMap(entityPropertyFreqs.asMap(), "results/patternsFreq.txt");
+        Utils.persistSortedMap(entityFreqsAllClasses, "results/entityFreqsAllClasses.txt");
+        Utils.persistSortedMap(entityFreqsInstanceOf, "results/entityFreqsInstanceOf.txt");
+        Utils.persistSortedMap(entityPropertyFreqs.asMap(), "results/entityPropertyFreqs.txt");
+        Utils.persistSortedMap(entityPropertyFreqsInstanceOfOnly.asMap(), "results/entityPropertyFreqsInstanceOfOnly.txt");
+        Utils.persistSortedMap(propertyFreqs, "results/propertyFreqs.txt");
+        Utils.persistSortedMap(entityFreqs, "results/entityFreqs.txt");
 
         //        Utils.persistSortedMap(typesFreqOfNonValidTypes, "results/typesFreqOfNonValidTypes.txt");
 

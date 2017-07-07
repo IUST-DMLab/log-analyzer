@@ -2,6 +2,7 @@ all.log*
 *.log
 data/
 results/
+*cache*/
 
 # Created by https://www.gitignore.io/api/java,maven,eclipse,intellij,maven
 
