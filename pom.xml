@@ -93,7 +93,7 @@
         <dependency>
             <groupId>ir.ac.iust.dml.kg</groupId>
             <artifactId>resource-extractor</artifactId>
-            <version>1.4.0</version>
+            <version>1.5.0</version>
             <!--<exclusions>
                 <exclusion>
                     <groupId>org.apache.logging.log4j</groupId>
