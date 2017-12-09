@@ -12,8 +12,6 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static ir.ac.iust.dml.kg.resource.extractor.ResourceType.Entity;
-
 
 /**
  * Created by ali on 17/02/17.
@@ -63,7 +61,7 @@ public class LogReader {
             try {
                     /*lr.setMatchedEntities(extractor.search(lr.getQueryText(), true));*/
                 writer.write("\n\n QUERY:\t" + lr.getQueryText() + "\n");
-                List<MatchedResource> result = extractor.search(lr.getQueryText(), true);
+              List<MatchedResource> result = extractor.search(lr.getQueryText(), true, false);
                 if (result.size() > 0)
                     System.out.printf("%s:\t result size %d\n", lr.getQueryText(), result.size());
 
